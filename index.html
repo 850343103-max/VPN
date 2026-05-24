@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>数字资源订阅 | 自动发货 MVP</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="数字资源订阅首页">
+        <span class="brand-mark"></span>
+        <span>数字资源订阅</span>
+      </a>
+      <nav class="nav">
+        <a href="#plans">套餐</a>
+        <a href="#purchase">购买</a>
+        <a href="#tutorial">教程</a>
+        <a href="admin.html">管理后台</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="hero">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div class="hero-content">
+          <p class="eyebrow">数字资源订阅 · 配置资源 · 使用教程</p>
+          <h1>自动交付数字资源，购买流程清晰可信。</h1>
+          <p class="hero-copy">
+            面向数字资源订阅的购买页面，覆盖套餐展示、邮箱下单、收款码确认、配置资源发货与订单管理。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-btn" href="#purchase" id="quickBuyButton">立即购买</a>
+            <a class="secondary-btn" href="#tutorial">查看教程</a>
+          </div>
+          <div class="trust-strip" aria-label="服务特点">
+            <span>邮箱接收</span>
+            <span>订单留存</span>
+            <span>教程引导</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="plans" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Subscription</p>
+          <h2>选择适合你的订阅周期</h2>
+        </div>
+        <div class="plans">
+          <article class="plan-card" data-plan-card="月卡">
+            <div>
+              <p class="plan-label">入门体验</p>
+              <h3>月卡</h3>
+              <p class="price">¥29<span>/月</span></p>
+              <p class="plan-desc">适合短期体验数字资源订阅服务。</p>
+            </div>
+            <ul>
+              <li>基础配置资源</li>
+              <li>邮箱自动发货模拟</li>
+              <li>通用使用教程</li>
+            </ul>
+            <button class="plan-btn" type="button" data-plan="月卡">选择月卡</button>
+          </article>
+
+          <article class="plan-card featured" data-plan-card="季卡">
+            <div class="badge">推荐</div>
+            <div>
+              <p class="plan-label">稳定使用</p>
+              <h3>季卡</h3>
+              <p class="price">¥79<span>/季</span></p>
+              <p class="plan-desc">适合连续使用，价格更均衡。</p>
+            </div>
+            <ul>
+              <li>标准配置资源</li>
+              <li>订单状态追踪</li>
+              <li>更新说明与教程</li>
+            </ul>
+            <button class="plan-btn" type="button" data-plan="季卡">选择季卡</button>
+          </article>
+
+          <article class="plan-card" data-plan-card="年卡">
+            <div>
+              <p class="plan-label">长期订阅</p>
+              <h3>年卡</h3>
+              <p class="price">¥259<span>/年</span></p>
+              <p class="plan-desc">适合长期保留订阅和配置资源。</p>
+            </div>
+            <ul>
+              <li>完整配置资源</li>
+              <li>全年资源更新</li>
+              <li>优先查看教程更新</li>
+            </ul>
+            <button class="plan-btn" type="button" data-plan="年卡">选择年卡</button>
+          </article>
+        </div>
+      </section>
+
+      <section id="purchase" class="section purchase-band">
+        <div class="section-heading">
+          <p class="eyebrow">Checkout</p>
+          <h2>购买表单</h2>
+        </div>
+        <div class="checkout-layout">
+          <form class="checkout-panel" id="purchaseForm">
+            <label for="email">接收邮箱</label>
+            <input id="email" name="email" type="email" placeholder="name@example.com" required />
+
+            <label for="plan">订阅套餐</label>
+            <select id="plan" name="plan" required>
+              <option value="月卡">月卡 · ¥29</option>
+              <option value="季卡">季卡 · ¥79</option>
+              <option value="年卡">年卡 · ¥259</option>
+            </select>
+
+            <button class="primary-btn full" type="submit">打开收款码</button>
+          </form>
+
+          <aside class="order-panel" aria-live="polite">
+            <p class="panel-kicker">订单状态</p>
+            <h3 id="orderTitle">等待创建订单</h3>
+            <p id="orderMessage">选择套餐并填写邮箱后，即可查看收款码。付款后点击“我已支付”完成发货。</p>
+            <div class="order-meta" id="orderMeta" hidden>
+              <span>订单号</span>
+              <strong id="activeOrderId">--</strong>
+            </div>
+            <div class="order-actions">
+              <button class="secondary-btn" id="copyActiveOrder" type="button" disabled>复制订单号</button>
+              <button class="secondary-btn" id="contactButton" type="button">联系客服</button>
+              <button class="send-btn" id="payButton" type="button">查看收款码</button>
+              <button class="send-btn" id="sendButton" type="button" disabled>重新显示发货资源</button>
+            </div>
+          </aside>
+        </div>
+
+        <div class="delivery-result" id="deliveryResult" hidden>
+          <div class="section-heading compact">
+            <p class="eyebrow">Delivery</p>
+            <h2>配置资源已发货</h2>
+            <p>购买后请按照教程导入，妥善保存订单号和配置资源二维码。</p>
+          </div>
+          <div class="delivery-grid">
+            <div class="resource-panel">
+              <p class="panel-kicker">订单号</p>
+              <h3 id="deliveryOrderId">--</h3>
+              <img class="resource-qr" src="assets/qrcode.png?v=20260524" alt="数字资源订阅配置资源二维码" />
+              <div class="delivery-actions">
+                <a class="primary-btn" id="tutorialLink" href="#" target="_blank" rel="noreferrer">打开使用教程</a>
+                <button class="secondary-btn" id="copyTutorialLink" type="button">复制教程链接</button>
+              </div>
+            </div>
+            <div class="email-panel">
+              <div class="email-panel-head">
+                <p class="panel-kicker">邮件内容模板</p>
+                <button class="mini-btn" id="copyEmailTemplate" type="button">复制模板</button>
+              </div>
+              <pre id="emailTemplate"></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tutorial" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Guide</p>
+          <h2>通用使用教程</h2>
+        </div>
+        <div class="tutorial-grid">
+          <article>
+            <span class="step">01</span>
+            <h3>接收邮件</h3>
+            <p>订单完成后，系统会模拟把数字资源订阅信息、配置资源说明和教程入口发送到你的邮箱。</p>
+          </article>
+          <article>
+            <span class="step">02</span>
+            <h3>查看二维码</h3>
+            <p>在邮件或资源页中查看二维码，使用支持订阅导入的应用扫描二维码。</p>
+          </article>
+          <article>
+            <span class="step">03</span>
+            <h3>导入订阅资源</h3>
+            <p>复制订阅地址或扫描二维码后，在应用内选择导入订阅，按页面提示完成配置。</p>
+          </article>
+          <article>
+            <span class="step">04</span>
+            <h3>更新配置资源</h3>
+            <p>如资源有更新，在应用内刷新订阅即可同步最新配置。请妥善保管邮箱中的订阅信息。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="admin" class="section admin-band">
+        <div class="section-heading">
+          <p class="eyebrow">Admin</p>
+          <h2>订单管理区</h2>
+        </div>
+        <div class="admin-toolbar">
+          <p id="orderCount">暂无订单</p>
+          <button class="ghost-btn" id="clearOrders" type="button">清空订单</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>订单号</th>
+                <th>邮箱</th>
+                <th>套餐</th>
+                <th>状态</th>
+                <th>下单时间</th>
+                <th>发货时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>数字资源订阅 · 订单数据当前保存在浏览器 localStorage。</p>
+    </footer>
+
+    <div class="modal" id="paymentModal" aria-hidden="true" role="dialog" aria-labelledby="paymentTitle">
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal-panel">
+        <button class="modal-close" type="button" data-close-modal aria-label="关闭支付二维码">×</button>
+        <p class="panel-kicker">Payment</p>
+        <h2 id="paymentTitle">收款二维码</h2>
+        <p id="paymentOrderInfo">请填写接收邮箱并确认套餐，付款后点击“我已支付”即可完成发货。</p>
+        <label for="modalEmail">接收邮箱</label>
+        <input id="modalEmail" type="email" placeholder="name@example.com" required />
+        <label for="modalPlan">订阅套餐</label>
+        <select id="modalPlan" required>
+          <option value="月卡">月卡 · ¥29</option>
+          <option value="季卡">季卡 · ¥79</option>
+          <option value="年卡">年卡 · ¥259</option>
+        </select>
+        <img class="pay-qr" id="payQrcodeImage" src="assets/pay-qrcode.png?v=20260524" alt="数字资源订阅收款二维码" />
+        <p class="image-error" id="payQrcodeError" hidden>收款二维码加载失败，请刷新页面或检查部署文件。</p>
+        <p class="pay-note">完成支付后，请点击“我已支付”。购买成功后会显示配置资源二维码和使用教程。</p>
+        <button class="primary-btn full" id="confirmPaidButton" type="button">我已支付</button>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>订单管理后台 | 数字资源订阅</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="返回数字资源订阅首页">
+        <span class="brand-mark"></span>
+        <span>数字资源订阅</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html#plans">套餐</a>
+        <a href="index.html#purchase">购买</a>
+        <a href="index.html#tutorial">教程</a>
+        <a href="admin.html">管理后台</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section admin-page">
+        <div class="section-heading">
+          <p class="eyebrow">Admin Console</p>
+          <h1>订单管理后台</h1>
+          <p class="hero-copy">查看当前浏览器 localStorage 中保存的订单，包含邮箱、套餐、订单号、状态和发货时间。</p>
+        </div>
+
+        <div class="admin-toolbar">
+          <p id="orderCount">暂无订单</p>
+          <div class="admin-actions">
+            <button class="ghost-btn" id="contactButton" type="button">联系客服</button>
+            <button class="ghost-btn" id="clearOrders" type="button">清空订单</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>订单号</th>
+                <th>邮箱</th>
+                <th>套餐</th>
+                <th>状态</th>
+                <th>下单时间</th>
+                <th>发货时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>管理后台 · 数据仅保存在当前浏览器 localStorage。</p>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
