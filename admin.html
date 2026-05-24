@@ -25,14 +25,19 @@
         <div class="section-heading">
           <p class="eyebrow">Admin Console</p>
           <h1>订单管理后台</h1>
-          <p class="hero-copy">查看当前浏览器 localStorage 中保存的订单，包含邮箱、套餐、订单号、状态和发货时间。</p>
+          <p class="hero-copy">查看所有待核验订单，确认到账后点击发货，系统会把配置资源和使用教程发送到用户邮箱。</p>
         </div>
 
         <div class="admin-toolbar">
+          <div class="admin-login">
+            <input id="adminPassword" type="password" placeholder="后台密码" />
+            <button class="primary-btn" id="adminLogin" type="button">登录后台</button>
+            <button class="ghost-btn" id="refreshOrders" type="button">刷新订单</button>
+          </div>
+          <p id="adminStatus">请输入后台密码</p>
           <p id="orderCount">暂无订单</p>
           <div class="admin-actions">
             <button class="ghost-btn" id="contactButton" type="button">联系客服</button>
-            <button class="ghost-btn" id="clearOrders" type="button">清空订单</button>
           </div>
         </div>
         <div class="table-wrap">
@@ -59,6 +64,6 @@
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="app.js"></script>
+    <script src="admin.js"></script>
   </body>
 </html>

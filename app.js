@@ -48,7 +48,7 @@ const copyEmailTemplate = document.querySelector("#copyEmailTemplate");
 
 let activeOrderId = null;
 let payQrcodeAttempt = 0;
-const statuses = ["待支付", "已支付", "已发货"];
+const statuses = ["待核验", "已发货"];
 
 function loadOrders() {
   try {
@@ -79,7 +79,7 @@ function createOrder(email, plan) {
     email,
     plan,
     price: planPrices[plan],
-    status: "待支付",
+    status: "待核验",
     createdAt: new Date().toLocaleString("zh-CN", { hour12: false }),
     deliveredAt: "",
   };
@@ -93,7 +93,7 @@ function normalizeOrders(orders) {
       ? order.status
       : order.status === "已发送"
         ? "已发货"
-        : "待支付",
+        : "待核验",
   }));
 }
 
@@ -112,8 +112,7 @@ function getActiveOrder() {
 
 function getStatusClass(status) {
   return {
-    "待支付": "pending",
-    "已支付": "paid",
+    "待核验": "pending",
     "已发货": "sent",
   }[status];
 }
@@ -166,7 +165,7 @@ function setOrderState(title, message, order = null) {
   if (activeOrderIdText) activeOrderIdText.textContent = order ? order.id : "--";
   if (copyActiveOrder) copyActiveOrder.disabled = !order;
   if (payButton) payButton.disabled = false;
-  if (sendButton) sendButton.disabled = !order || order.status !== "已发货";
+  if (sendButton) sendButton.disabled = true;
 }
 
 function showToast(message) {
@@ -210,6 +209,35 @@ ${supportContact}
 如需协助，请提供订单号和购买邮箱。`;
 }
 
+async function createServerOrder(email, plan) {
+  const response = await fetch("/api/orders", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, plan }),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || "订单提交失败");
+  return data.order;
+}
+
+function storeLocalBackup(order) {
+  const backup = {
+    id: order.id,
+    email: order.email,
+    plan: order.plan,
+    price: order.price,
+    status: order.status,
+    createdAt: order.created_at
+      ? new Date(order.created_at).toLocaleString("zh-CN", { hour12: false })
+      : new Date().toLocaleString("zh-CN", { hour12: false }),
+    deliveredAt: order.delivered_at
+      ? new Date(order.delivered_at).toLocaleString("zh-CN", { hour12: false })
+      : "",
+  };
+  saveOrders([backup, ...loadOrders()]);
+  return backup;
+}
+
 function showDeliveryResult(order) {
   if (!deliveryResult) return;
 
@@ -242,7 +270,7 @@ function openPaymentModal(order = null, plan = planSelect?.value) {
   syncModalFields(plan);
   paymentOrderInfo.textContent = order
     ? `订单 ${order.id} · ${order.plan} · ${order.price}`
-    : "请填写接收邮箱并确认套餐，付款后点击“我已支付”即可生成订单并显示配置资源。";
+    : "请填写接收邮箱并确认套餐。付款后点击“我已支付”，后台核验后会发送配置资源和使用教程。";
   paymentModal.classList.add("open");
   paymentModal.setAttribute("aria-hidden", "false");
 }
@@ -291,36 +319,32 @@ if (confirmPaidButton) confirmPaidButton.addEventListener("click", () => {
   }
 
   syncFormFields();
-  const order = createOrder(modalEmail.value.trim(), modalPlan.value);
-  const shippedOrder = {
-    ...order,
-    status: "已发货",
-    deliveredAt: new Date().toLocaleString("zh-CN", { hour12: false }),
-  };
-  saveOrders([shippedOrder, ...loadOrders()]);
-  activeOrderId = shippedOrder.id;
+  confirmPaidButton.disabled = true;
+  confirmPaidButton.textContent = "正在提交订单";
 
-  setOrderState(
-    "购买成功，配置资源已发货",
-    `订单 ${shippedOrder.id} 已生成并保存。购买后请按照教程导入。`,
-    shippedOrder,
-  );
-  renderOrders();
-  closePaymentModal();
-  showDeliveryResult(shippedOrder);
+  createServerOrder(modalEmail.value.trim(), modalPlan.value)
+    .then((serverOrder) => {
+      const backupOrder = storeLocalBackup(serverOrder);
+      activeOrderId = backupOrder.id;
+      setOrderState(
+        "订单已提交，等待后台核验",
+        `订单 ${backupOrder.id} 已保存。后台确认到账后会把数字资源订阅、配置资源和使用教程发送到 ${backupOrder.email}。`,
+        backupOrder,
+      );
+      renderOrders();
+      closePaymentModal();
+      showToast("订单已提交后台，等待核验发货");
+    })
+    .catch((error) => {
+      showToast(error.message);
+    })
+    .finally(() => {
+      confirmPaidButton.disabled = false;
+      confirmPaidButton.textContent = "我已支付";
+    });
 });
 
-if (sendButton) sendButton.addEventListener("click", () => {
-  const order = getActiveOrder();
-  if (!order || order.status !== "已发货") return;
-
-  setOrderState(
-    "配置资源已发货",
-    `订单 ${order.id} 的配置资源已显示。购买后请按照教程导入。`,
-    order,
-  );
-  showDeliveryResult(order);
-});
+if (sendButton) sendButton.addEventListener("click", () => {});
 
 if (copyActiveOrder) copyActiveOrder.addEventListener("click", () => {
   if (activeOrderId) copyText(activeOrderId, `已复制订单号：${activeOrderId}`);
@@ -339,7 +363,7 @@ if (contactButton) contactButton.addEventListener("click", () => contactSupport(
 if (clearOrders) clearOrders.addEventListener("click", () => {
   saveOrders([]);
   activeOrderId = null;
-  setOrderState("等待创建订单", "选择套餐并填写邮箱后，即可查看收款码。付款后点击“我已支付”完成发货。");
+  setOrderState("等待创建订单", "选择套餐并填写邮箱后，即可查看收款码。付款后点击“我已支付”，订单会提交到后台等待核验。");
   renderOrders();
 });
 
@@ -358,7 +382,6 @@ if (ordersTable) ordersTable.addEventListener("change", (event) => {
   const order = updateOrder(select.dataset.statusId, changes);
   if (order.id === activeOrderId) {
     setOrderState(`订单状态：${order.status}`, `订单 ${order.id} 当前状态已更新。`, order);
-    if (order.status === "已发货") showDeliveryResult(order);
   }
   showToast(`订单状态已更新为：${order.status}`);
 });

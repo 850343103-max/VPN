@@ -118,7 +118,7 @@
           <aside class="order-panel" aria-live="polite">
             <p class="panel-kicker">订单状态</p>
             <h3 id="orderTitle">等待创建订单</h3>
-            <p id="orderMessage">选择套餐并填写邮箱后，即可查看收款码。付款后点击“我已支付”完成发货。</p>
+            <p id="orderMessage">选择套餐并填写邮箱后，即可查看收款码。付款后点击“我已支付”，订单会提交到后台等待核验。</p>
             <div class="order-meta" id="orderMeta" hidden>
               <span>订单号</span>
               <strong id="activeOrderId">--</strong>
@@ -127,7 +127,7 @@
               <button class="secondary-btn" id="copyActiveOrder" type="button" disabled>复制订单号</button>
               <button class="secondary-btn" id="contactButton" type="button">联系客服</button>
               <button class="send-btn" id="payButton" type="button">查看收款码</button>
-              <button class="send-btn" id="sendButton" type="button" disabled>重新显示发货资源</button>
+              <button class="send-btn" id="sendButton" type="button" disabled>等待后台发货</button>
             </div>
           </aside>
         </div>
@@ -226,7 +226,7 @@
         <button class="modal-close" type="button" data-close-modal aria-label="关闭支付二维码">×</button>
         <p class="panel-kicker">Payment</p>
         <h2 id="paymentTitle">收款二维码</h2>
-        <p id="paymentOrderInfo">请填写接收邮箱并确认套餐，付款后点击“我已支付”即可完成发货。</p>
+        <p id="paymentOrderInfo">请填写接收邮箱并确认套餐。付款后点击“我已支付”，后台核验后会发送配置资源和使用教程。</p>
         <label for="modalEmail">接收邮箱</label>
         <input id="modalEmail" type="email" placeholder="name@example.com" required />
         <label for="modalPlan">订阅套餐</label>
@@ -237,7 +237,7 @@
         </select>
         <img class="pay-qr" id="payQrcodeImage" src="assets/pay-qrcode.png?v=20260524" alt="数字资源订阅收款二维码" />
         <p class="image-error" id="payQrcodeError" hidden>收款二维码加载失败，请刷新页面或检查部署文件。</p>
-        <p class="pay-note">完成支付后，请点击“我已支付”。购买成功后会显示配置资源二维码和使用教程。</p>
+        <p class="pay-note">完成支付后，请点击“我已支付”。后台确认到账后会自动发送配置资源二维码和使用教程到邮箱。</p>
         <button class="primary-btn full" id="confirmPaidButton" type="button">我已支付</button>
       </div>
     </div>

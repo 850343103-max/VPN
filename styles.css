@@ -529,6 +529,17 @@ select:focus {
   gap: 10px;
 }
 
+.admin-login {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-login input {
+  width: min(260px, 100%);
+  margin-bottom: 0;
+}
+
 .admin-page h1 {
   max-width: 780px;
   margin-bottom: 18px;
@@ -614,6 +625,12 @@ td {
   color: var(--silver);
   font-size: 13px;
   box-shadow: none;
+}
+
+.mini-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
 }
 
 .empty {
@@ -809,5 +826,13 @@ td {
 
   .admin-actions {
     flex-direction: column;
+  }
+
+  .admin-login {
+    flex-direction: column;
+  }
+
+  .admin-login input {
+    width: 100%;
   }
 }
