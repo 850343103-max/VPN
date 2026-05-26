@@ -32,6 +32,15 @@
 - `FROM_EMAIL`：发件邮箱，例如 `数字资源订阅 <notice@yourdomain.com>`
 - `SITE_URL`：你的线上站点地址，例如 `https://your-site.vercel.app`
 
+## 半自动发货流程
+
+1. 用户选择套餐并填写邮箱。
+2. 用户扫码付款后点击“我已支付”。
+3. 订单进入 Supabase，状态为 `待核验`。
+4. 管理员进入 `admin.html`，输入 `ADMIN_PASSWORD` 登录。
+5. 确认到账后点击“确认发货”。
+6. 系统通过 Resend 发送邮件，邮件包含配置资源二维码、二维码附件和使用教程链接。
+
 ## Vercel
 
 项目无需构建命令。Vercel 会自动部署静态页面和 `api/` 下的 Serverless Functions。

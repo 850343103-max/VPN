@@ -8,11 +8,23 @@ const {
   tutorialUrl,
 } = require("../_shared");
 
+async function qrcodeAttachment(baseUrl) {
+  const response = await fetch(`${baseUrl}/assets/qrcode.png`);
+  if (!response.ok) return null;
+
+  const arrayBuffer = await response.arrayBuffer();
+  return {
+    filename: "qrcode.png",
+    content: Buffer.from(arrayBuffer).toString("base64"),
+  };
+}
+
 async function sendEmail(order, baseUrl) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error("Missing environment variable: RESEND_API_KEY");
 
   const from = process.env.FROM_EMAIL || "数字资源订阅 <onboarding@resend.dev>";
+  const attachment = await qrcodeAttachment(baseUrl);
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -28,10 +40,11 @@ async function sendEmail(order, baseUrl) {
         "感谢购买数字资源订阅。",
         `订单号：${order.id}`,
         `订阅套餐：${order.plan}（${order.price}）`,
-        "配置资源说明：请查看邮件中的二维码图片。购买后请按照教程导入。",
+        "配置资源说明：请查看邮件中的二维码图片或附件 qrcode.png。购买后请按照教程导入。",
         `使用教程：${tutorialUrl}`,
         "售后联系方式：请回复本邮件，并提供订单号和购买邮箱。",
       ].join("\n"),
+      attachments: attachment ? [attachment] : undefined,
     }),
   });
 

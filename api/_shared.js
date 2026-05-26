@@ -97,6 +97,7 @@ function emailHtml(order, baseUrl) {
       <p>订阅套餐：${order.plan}（${order.price}）</p>
       <p>配置资源说明：请查看下方二维码图片。购买后请按照教程导入。</p>
       <p><img src="${qrcodeUrl}" alt="配置资源二维码" style="width:240px;max-width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:8px" /></p>
+      <p>如果图片未显示，请查看邮件附件中的 <strong>qrcode.png</strong>。</p>
       <p>使用教程：<a href="${tutorialUrl}">${tutorialUrl}</a></p>
       <p>售后联系方式：请回复本邮件，并提供订单号和购买邮箱。</p>
     </div>
