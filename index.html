@@ -224,21 +224,25 @@
       <div class="modal-backdrop" data-close-modal></div>
       <div class="modal-panel">
         <button class="modal-close" type="button" data-close-modal aria-label="关闭支付二维码">×</button>
-        <p class="panel-kicker">Payment</p>
-        <h2 id="paymentTitle">收款二维码</h2>
-        <p id="paymentOrderInfo">请填写接收邮箱并确认套餐。付款后点击“我已支付”，后台核验后会发送配置资源和使用教程。</p>
-        <label for="modalEmail">接收邮箱</label>
-        <input id="modalEmail" type="email" placeholder="name@example.com" required />
-        <label for="modalPlan">订阅套餐</label>
-        <select id="modalPlan" required>
-          <option value="月卡">月卡 · ¥29</option>
-          <option value="季卡">季卡 · ¥79</option>
-          <option value="年卡">年卡 · ¥259</option>
-        </select>
-        <img class="pay-qr" id="payQrcodeImage" src="assets/pay-qrcode.png?v=20260524" alt="数字资源订阅收款二维码" />
-        <p class="image-error" id="payQrcodeError" hidden>收款二维码加载失败，请刷新页面或检查部署文件。</p>
-        <p class="pay-note">完成支付后，请点击“我已支付”。后台确认到账后会自动发送配置资源二维码和使用教程到邮箱。</p>
-        <button class="primary-btn full" id="confirmPaidButton" type="button">我已支付</button>
+        <div class="modal-scroll" id="paymentModalScroll">
+          <p class="panel-kicker">Payment</p>
+          <h2 id="paymentTitle">收款二维码</h2>
+          <p id="paymentOrderInfo">请填写接收邮箱并确认套餐。付款后点击“我已支付”，后台核验后会发送配置资源和使用教程。</p>
+          <label for="modalEmail">接收邮箱</label>
+          <input id="modalEmail" type="email" placeholder="name@example.com" required />
+          <label for="modalPlan">订阅套餐</label>
+          <select id="modalPlan" required>
+            <option value="月卡">月卡 · ¥29</option>
+            <option value="季卡">季卡 · ¥79</option>
+            <option value="年卡">年卡 · ¥259</option>
+          </select>
+          <img class="pay-qr" id="payQrcodeImage" src="assets/pay-qrcode.png?v=20260524" alt="数字资源订阅收款二维码" />
+          <p class="image-error" id="payQrcodeError" hidden>收款二维码加载失败，请刷新页面或检查部署文件。</p>
+          <p class="pay-note">完成支付后，请点击“我已支付”。后台确认到账后会自动发送配置资源二维码和使用教程到邮箱。</p>
+        </div>
+        <div class="modal-footer">
+          <button class="primary-btn full" id="confirmPaidButton" type="button">我已支付</button>
+        </div>
       </div>
     </div>
 

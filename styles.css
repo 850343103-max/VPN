@@ -654,6 +654,7 @@ td {
   display: none;
   place-items: center;
   padding: 18px;
+  min-height: 100dvh;
 }
 
 .modal.open {
@@ -670,18 +671,37 @@ td {
 .modal-panel {
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
   width: min(440px, 100%);
+  max-height: calc(100dvh - 36px);
   border: 1px solid rgba(85, 215, 255, 0.24);
   border-radius: 8px;
-  padding: 28px;
+  overflow: hidden;
   background: linear-gradient(180deg, rgba(18, 29, 42, 0.98), rgba(8, 13, 20, 0.98));
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5);
+}
+
+.modal-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 28px 28px 12px;
+}
+
+.modal-footer {
+  flex: 0 0 auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 14px 28px 28px;
+  background: linear-gradient(180deg, rgba(8, 13, 20, 0.88), rgba(8, 13, 20, 0.98));
 }
 
 .modal-close {
   position: absolute;
   top: 14px;
   right: 14px;
+  z-index: 2;
   width: 36px;
   height: 36px;
   border: 1px solid var(--line);
@@ -834,5 +854,77 @@ td {
 
   .admin-login input {
     width: 100%;
+  }
+
+  .modal {
+    align-items: stretch;
+    padding: 10px;
+    padding-top: max(10px, env(safe-area-inset-top));
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .modal-panel {
+    width: 100%;
+    max-height: calc(100dvh - max(20px, env(safe-area-inset-top)) - max(20px, env(safe-area-inset-bottom)));
+  }
+
+  .modal-scroll {
+    padding: 22px 18px 10px;
+  }
+
+  .modal-scroll h2 {
+    padding-right: 42px;
+    font-size: 26px;
+  }
+
+  .modal-close {
+    top: 12px;
+    right: 12px;
+  }
+
+  .pay-qr {
+    width: min(100%, 250px);
+    max-height: 34dvh;
+    margin: 14px auto 12px;
+    border-width: 8px;
+  }
+
+  .pay-note {
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+
+  .modal-footer {
+    padding: 12px 18px max(16px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-height: 680px) and (max-width: 560px) {
+  .modal-scroll {
+    padding-top: 18px;
+  }
+
+  .modal-scroll .panel-kicker {
+    margin-bottom: 8px;
+  }
+
+  .modal-scroll h2 {
+    margin-bottom: 8px;
+    font-size: 23px;
+  }
+
+  .modal-scroll label {
+    margin-bottom: 6px;
+  }
+
+  .modal-scroll input,
+  .modal-scroll select {
+    min-height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .pay-qr {
+    width: min(100%, 210px);
+    max-height: 28dvh;
   }
 }

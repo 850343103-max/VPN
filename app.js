@@ -31,6 +31,7 @@ const orderCount = document.querySelector("#orderCount");
 const clearOrders = document.querySelector("#clearOrders");
 const planButtons = document.querySelectorAll("[data-plan]");
 const paymentModal = document.querySelector("#paymentModal");
+const paymentModalScroll = document.querySelector("#paymentModalScroll");
 const paymentOrderInfo = document.querySelector("#paymentOrderInfo");
 const payQrcodeImage = document.querySelector("#payQrcodeImage");
 const payQrcodeError = document.querySelector("#payQrcodeError");
@@ -273,6 +274,7 @@ function openPaymentModal(order = null, plan = planSelect?.value) {
     : "请填写接收邮箱并确认套餐。付款后点击“我已支付”，后台核验后会发送配置资源和使用教程。";
   paymentModal.classList.add("open");
   paymentModal.setAttribute("aria-hidden", "false");
+  if (paymentModalScroll) paymentModalScroll.scrollTop = 0;
 }
 
 function closePaymentModal() {
