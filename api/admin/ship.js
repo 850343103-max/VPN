@@ -1,15 +1,37 @@
 const {
   assertAdmin,
-  emailHtml,
   json,
   readBody,
-  siteUrl,
   supabase,
   tutorialUrl,
 } = require("../_shared");
 
-async function qrcodeAttachment(baseUrl) {
-  const response = await fetch(`${baseUrl}/assets/qrcode.png`);
+const publicQrcodeUrl = "https://780982.xyz/assets/qrcode.png";
+
+function emailHtml(order) {
+  return `
+    <div style="font-family:Arial,'Microsoft YaHei',sans-serif;line-height:1.7;color:#111827">
+      <h2>感谢购买数字资源订阅</h2>
+      <p>订单号：<strong>${order.id}</strong></p>
+      <p>订阅套餐：${order.plan}（${order.price}）</p>
+      <p>配置资源说明：请查看下方二维码图片。购买后请按照教程导入。</p>
+      <p>
+        <img src="${publicQrcodeUrl}" alt="配置资源二维码" style="width:240px;max-width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:8px" />
+      </p>
+      <p>
+        <a href="${publicQrcodeUrl}" style="display:inline-block;background:#111827;color:#ffffff;text-decoration:none;border-radius:8px;padding:10px 16px;font-weight:700">
+          点击打开二维码
+        </a>
+      </p>
+      <p>如果图片未显示，请点击上方链接或下载附件 <strong>qrcode.png</strong> 查看。</p>
+      <p>使用教程：<a href="${tutorialUrl}">${tutorialUrl}</a></p>
+      <p>售后联系方式：请回复本邮件，并提供订单号和购买邮箱。</p>
+    </div>
+  `;
+}
+
+async function qrcodeAttachment() {
+  const response = await fetch(publicQrcodeUrl);
   if (!response.ok) return null;
 
   const arrayBuffer = await response.arrayBuffer();
@@ -19,12 +41,12 @@ async function qrcodeAttachment(baseUrl) {
   };
 }
 
-async function sendEmail(order, baseUrl) {
+async function sendEmail(order) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error("Missing environment variable: RESEND_API_KEY");
 
   const from = process.env.FROM_EMAIL || "数字资源订阅 <onboarding@resend.dev>";
-  const attachment = await qrcodeAttachment(baseUrl);
+  const attachment = await qrcodeAttachment();
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -35,12 +57,13 @@ async function sendEmail(order, baseUrl) {
       from,
       to: order.email,
       subject: `数字资源订阅发货通知 - ${order.id}`,
-      html: emailHtml(order, baseUrl),
+      html: emailHtml(order),
       text: [
         "感谢购买数字资源订阅。",
         `订单号：${order.id}`,
         `订阅套餐：${order.plan}（${order.price}）`,
-        "配置资源说明：请查看邮件中的二维码图片或附件 qrcode.png。购买后请按照教程导入。",
+        `配置资源二维码：${publicQrcodeUrl}`,
+        "如果图片未显示，请点击二维码链接或下载附件 qrcode.png 查看。购买后请按照教程导入。",
         `使用教程：${tutorialUrl}`,
         "售后联系方式：请回复本邮件，并提供订单号和购买邮箱。",
       ].join("\n"),
@@ -70,7 +93,7 @@ module.exports = async function handler(req, res) {
     const order = rows[0];
     if (!order) return json(res, 404, { error: "Order not found" });
 
-    await sendEmail(order, siteUrl(req));
+    await sendEmail(order);
 
     const deliveredAt = new Date().toISOString();
     const updated = await supabase(`orders?id=eq.${encodeURIComponent(id)}`, {
