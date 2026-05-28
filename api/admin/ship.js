@@ -76,6 +76,29 @@ async function sendEmail(order) {
   return data;
 }
 
+async function patchOrder(id, payload) {
+  return supabase(`orders?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+async function updateAfterSend(id, mode) {
+  const now = new Date().toISOString();
+
+  if (mode === "resend") {
+    try {
+      return await patchOrder(id, { resent_at: now });
+    } catch {
+      return supabase(`orders?id=eq.${encodeURIComponent(id)}&select=*`, {
+        method: "GET",
+      });
+    }
+  }
+
+  return patchOrder(id, { status: "已发货", delivered_at: now });
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return json(res, 405, { error: "Method not allowed" });
@@ -85,6 +108,7 @@ module.exports = async function handler(req, res) {
     assertAdmin(req);
     const body = await readBody(req);
     const id = String(body.id || "").trim();
+    const mode = body.mode === "resend" ? "resend" : "ship";
     if (!id) return json(res, 400, { error: "Missing order id" });
 
     const rows = await supabase(`orders?id=eq.${encodeURIComponent(id)}&select=*`, {
@@ -95,11 +119,7 @@ module.exports = async function handler(req, res) {
 
     await sendEmail(order);
 
-    const deliveredAt = new Date().toISOString();
-    const updated = await supabase(`orders?id=eq.${encodeURIComponent(id)}`, {
-      method: "PATCH",
-      body: JSON.stringify({ status: "已发货", delivered_at: deliveredAt }),
-    });
+    const updated = await updateAfterSend(id, mode);
 
     return json(res, 200, { order: updated[0] });
   } catch (error) {
